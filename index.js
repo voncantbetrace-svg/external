@@ -65,3 +65,5 @@ client.login(process.env.TOKEN).catch(err => {
   console.error("Login failed. Check your TOKEN:", err);
   process.exit(1);
 });
+
+console.log("Loaded token:", process.env.TOKEN);
