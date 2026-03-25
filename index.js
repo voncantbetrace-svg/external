@@ -1,19 +1,7 @@
-require('dotenv').config();
-const { Client, GatewayIntentBits } = require('discord.js');
+import 'dotenv/config';
+import { Client, GatewayIntentBits } from 'discord.js';
 
-// Replace with your Discord user ID
-const OWNER_ID = '291215718106791936';
-
-// ✅ External bot uses TOKEN from environment variable
-if (!process.env.TOKEN) {
-  console.error("ERROR: Missing TOKEN environment variable.");
-  process.exit(1);
-}
-
-// Step 3: Debug logging at startup
-console.log("Starting bot...");
-
-// Create the client with proper intents
+// Create the client
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -22,48 +10,22 @@ const client = new Client({
   ]
 });
 
-// Bot ready event
+// Event: bot ready
 client.once('ready', () => {
-  console.log(`Bot is online as ${client.user.tag}!`);
-  console.log('Guilds this bot is in:');
-  client.guilds.cache.forEach(g => console.log(g.id, g.name));
+  console.log(`✅ Logged in as ${client.user.tag}`);
 });
 
-// Interaction handler with owner-only protection
-client.on('interactionCreate', async interaction => {
-  if (!interaction.isCommand()) return;
+// Event: message listener
+client.on('messageCreate', message => {
+  if (message.author.bot) return;
 
-  // Only allow the owner
-  if (interaction.user.id !== OWNER_ID) {
-    return interaction.reply({ content: "You are not allowed to use this bot.", ephemeral: true });
-  }
-
-  try {
-    if (interaction.commandName === 'flood') {
-      const message = interaction.options.getString('message');
-      let count = interaction.options.getInteger('count') || 1;
-
-      if (count > 16) count = 16;
-      if (count < 1) count = 1;
-
-      for (let i = 0; i < count; i++) {
-        await interaction.channel.send(`${message}`);
-      }
-
-      await interaction.reply({ content: `Sent message ${count} times!`, ephemeral: true });
-    }
-  } catch (err) {
-    console.error("Error handling interaction:", err);
-    if (!interaction.replied) {
-      await interaction.reply({ content: "Something went wrong!", ephemeral: true });
-    }
+  if (message.content.toLowerCase() === 'ping') {
+    message.reply('Pong!');
   }
 });
 
-// 🔑 Login using environment variable token (required for external hosting)
+// Login
+console.log("Loaded token:", process.env.TOKEN);
 client.login(process.env.TOKEN).catch(err => {
   console.error("Login failed. Check your TOKEN:", err);
-  process.exit(1);
 });
-
-console.log("Loaded token:", process.env.TOKEN);
