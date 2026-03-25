@@ -1,46 +1,34 @@
+import 'dotenv/config';
+import { REST, Routes, SlashCommandBuilder } from 'discord.js';
 
-require('dotenv').config();
-const { REST } = require('@discordjs/rest');
-const { Routes, SlashCommandBuilder } = require('discord.js');
-
-// ✅ Make sure all required env variables exist
-const { TOKEN, CLIENT_ID, GUILD_ID } = process.env;
-if (!TOKEN || !CLIENT_ID || !GUILD_ID) {
-  console.error("ERROR: Missing TOKEN, CLIENT_ID, or GUILD_ID.");
-  process.exit(1);
-}
-
-// ✅ Define commands
+// Define commands
 const commands = [
   new SlashCommandBuilder()
-    .setName('flood')
-    .setDescription('Send messages Pill Popper')
-    .addStringOption(option =>
-      option.setName('message')
-            .setDescription('Message to send')
-            .setRequired(true))
-    .addIntegerOption(option =>
-      option.setName('count')
-            .setDescription('Number of times to send (1-16)'))
-].map(cmd => cmd.toJSON());
+    .setName('ping')
+    .setDescription('Replies with Pong!')
+    .toJSON(),
 
-// ✅ Create REST client with bot token
-const rest = new REST({ version: '10' }).setToken(TOKEN);
+  new SlashCommandBuilder()
+    .setName('hello')
+    .setDescription('Replies with a greeting!')
+    .toJSON()
+];
 
+// Create REST instance
+const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
+
+// Deploy commands to your test server (guild)
 (async () => {
   try {
-    console.log('Registering slash commands...');
+    console.log(`⚡ Registering ${commands.length} slash commands...`);
 
-    // Register commands for a specific guild (faster for testing)
     await rest.put(
-      Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
+      Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
       { body: commands }
     );
 
-    console.log('✅ Commands registered successfully!');
+    console.log('✅ Successfully registered slash commands!');
   } catch (error) {
-    // Detailed error logging
-    console.error('❌ Failed to register commands. Check your TOKEN, CLIENT_ID, and GUILD_ID:');
-    console.error(error);
+    console.error('❌ Failed to register commands. Check TOKEN, CLIENT_ID, and GUILD_ID:', error);
   }
 })();
