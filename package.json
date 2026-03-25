@@ -1,18 +1,14 @@
-import 'dotenv/config'; // auto-loads .env
-import { Client, GatewayIntentBits } from 'discord.js';
-
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-client.once('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
-});
-
-client.on('interactionCreate', async interaction => {
-  if (!interaction.isChatInputCommand()) return;
-
-  if (interaction.commandName === 'earthrock') {
-    await interaction.reply('Bang bang!');
+{
+  "name": "external-bot",
+  "version": "1.0.0",
+  "description": "Discord bot updated and fixed",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "node deploy-commands.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.16.0",
+    "dotenv": "^16.3.1"
   }
-});
-
-client.login(process.env.DISCORD_TOKEN);
+}
