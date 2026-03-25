@@ -1,14 +1,14 @@
 {
-  "name": "external-bot",
+  "name": "my-discord-bot",
   "version": "1.0.0",
-  "description": "Discord bot updated and fixed",
+  "description": "Discord.js v15 Bot Starter (ESM)",
   "type": "module",
   "scripts": {
     "start": "node index.js",
     "deploy": "node deploy-commands.js"
   },
   "dependencies": {
-    "discord.js": "^14.16.0",
+    "discord.js": "^15.0.0",
     "dotenv": "^16.3.1"
   }
 }
