@@ -1,31 +1,18 @@
-import 'dotenv/config';
-import { Client, GatewayIntentBits } from 'discord.js';
+require('dotenv').config();
+const { Client, GatewayIntentBits } = require('discord.js');
 
-// Create the client
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
-  ]
-});
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-// Event: bot ready
 client.once('ready', () => {
-  console.log(`✅ Logged in as ${client.user.tag}`);
+  console.log(`Logged in as ${client.user.tag}!`);
 });
 
-// Event: message listener
-client.on('messageCreate', message => {
-  if (message.author.bot) return;
+client.on('interactionCreate', async interaction => {
+  if (!interaction.isChatInputCommand()) return;
 
-  if (message.content.toLowerCase() === 'ping') {
-    message.reply('Pong!');
+  if (interaction.commandName === 'earthrock') {
+    await interaction.reply('bang bang');
   }
 });
 
-// Login
-console.log("Loaded token:", process.env.TOKEN);
-client.login(process.env.TOKEN).catch(err => {
-  console.error("Login failed. Check your TOKEN:", err);
-});
+client.login(process.env.DISCORD_TOKEN);
