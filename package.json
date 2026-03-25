@@ -1,14 +1,18 @@
-{
-  "name": "discord-bot",
-  "version": "1.0.0",
-  "description": "Fresh Discord.js bot",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "dependencies": {
-    "discord.js": "^14.14.0",
-    "dotenv": "^16.3.1"
+import 'dotenv/config'; // auto-loads .env
+import { Client, GatewayIntentBits } from 'discord.js';
+
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+client.once('ready', () => {
+  console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.on('interactionCreate', async interaction => {
+  if (!interaction.isChatInputCommand()) return;
+
+  if (interaction.commandName === 'earthrock') {
+    await interaction.reply('Bang bang!');
   }
-}
+});
+
+client.login(process.env.DISCORD_TOKEN);
